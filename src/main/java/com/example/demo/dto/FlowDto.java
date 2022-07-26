@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Builder
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class FlowDto {

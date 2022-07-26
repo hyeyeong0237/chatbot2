@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.FlowDto;
 import com.example.demo.dto.StepDto;
 import com.example.demo.dto.request.FlowCreateDto;
 import com.example.demo.entity.Flow;
@@ -9,6 +10,7 @@ import com.example.demo.repository.FlowRepository;
 import com.example.demo.repository.step.MessageStepRepository;
 import com.example.demo.repository.step.WebSiteStepRepository;
 import com.example.demo.type.StepType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,8 +19,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -36,12 +40,47 @@ class FlowServiceTest {
     @InjectMocks
     private FlowService flowService;
 
+    private Long flowId = 1L;
+    private Flow flow;
+    private MessageStep messageStep;
+    private WebSiteStep webSiteStep;
+
+
+    private
+    @BeforeEach
+    void init(){
+
+
+        flow = Flow.builder()
+                .name("test flow")
+                .build();
+
+        flow.setId(flowId);
+
+       messageStep = MessageStep.builder()
+                .name("message step")
+                .text("hello")
+                .build();
+
+       messageStep.setId(1L);
+       messageStep.setFlow(flow);
+
+       webSiteStep = WebSiteStep.builder()
+                .name("website step")
+                .url("www.hello.com")
+                .build();
+
+       webSiteStep.setId(2L);
+       webSiteStep.setFlow(flow);
+
+    }
+
 
     @Test
-    @DisplayName("플로우 생성")
+    @DisplayName("플로우 생성 한다 ")
     void create_new_flow_test() throws Exception {
 
-        //given
+        //given다
         StepDto messageStepDto = StepDto.builder()
                 .stepName("message step")
                 .stepType(StepType.MESSAGE)
@@ -75,6 +114,55 @@ class FlowServiceTest {
 
         assertEquals(webSiteStep.getName(), websiteStepDto.getStepName());
         assertEquals(webSiteStep.getUrl(), websiteStepDto.getUrl());
+
+    }
+
+    @Test
+    @DisplayName("플로우 정보 가져오기")
+    void get_flow_test() throws Exception {
+
+        StepDto messageStepDto = StepDto.builder()
+                .stepId(1L)
+                .stepName("message step")
+                .stepType(StepType.MESSAGE)
+                .text("hello")
+                .build();
+
+        StepDto websiteStepDto = StepDto.builder()
+                .stepId(2L)
+                .stepName("website step")
+                .stepType(StepType.WEBSITE)
+                .url("www.hello.com")
+                .build();
+
+        List<StepDto> steps = List.of(messageStepDto, websiteStepDto);
+
+        FlowDto flowDto = FlowDto.builder()
+                .flowId(flowId)
+                .flowName("test flow")
+                .steps(steps)
+                .build();
+
+        when(flowRepository.findByWithStep(flowId)).thenReturn(Optional.ofNullable(flow));
+
+        FlowDto flowResult = flowService.getFlow(flowId);
+
+        StepDto messageStep = flowResult.getSteps().get(0);
+        StepDto webSiteStep = flowResult.getSteps().get(1);
+
+        assertEquals(flowDto.getFlowId(), flowResult.getFlowId());
+        assertEquals(flowDto.getFlowName(), flowResult.getFlowName());
+
+        assertEquals(messageStepDto.getStepId(), messageStep.getStepId());
+        assertEquals(messageStepDto.getStepName(), messageStep.getStepName());
+        assertEquals(messageStepDto.getStepType(), messageStep.getStepType());
+
+
+        assertEquals(websiteStepDto.getStepId(), webSiteStep.getStepId());
+        assertEquals(websiteStepDto.getStepName(), webSiteStep.getStepName());
+        assertEquals(websiteStepDto.getStepType(), webSiteStep.getStepType());
+
+
 
     }
 

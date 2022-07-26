@@ -15,14 +15,14 @@ import java.util.List;
 public class Flow extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FLOW_ID")
     private Long id;
 
     @Column(name = "FlOW_NAME")
     private String name;
 
-    @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Step> steps = new ArrayList<>();
 
     @Builder
@@ -30,6 +30,7 @@ public class Flow extends BaseEntity{
         this.name = name;
 
     }
+
 
 
 

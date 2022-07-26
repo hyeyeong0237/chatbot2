@@ -1,7 +1,9 @@
 package com.example.demo.repository.step;
 
 import com.example.demo.entity.Flow;
+import com.example.demo.entity.step.MessageStep;
 import com.example.demo.entity.step.Step;
+import com.example.demo.entity.step.WebSiteStep;
 import com.example.demo.repository.FlowRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,11 +15,13 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Rollback(false)
+@Transactional
+@Rollback(value = false)
 class StepRepositoryTest {
 
     @Autowired
@@ -29,15 +33,17 @@ class StepRepositoryTest {
     @Test
     @DisplayName("Step 저장")
     void testStep(){
-        Flow flow = new Flow("flow1");
+        Flow flow = new Flow("flow2");
         flowRepository.save(flow);
-        Step step = new Step(flow, "test3");
+        Step step = new Step(flow, "test");
         stepRepository.save(step);
         Step savedStep = stepRepository.findById(step.getId()).orElseThrow(EntityNotFoundException::new);
 
         Assertions.assertThat(savedStep.getId()).isEqualTo(step.getId());
 
     }
+
+
 
 
 

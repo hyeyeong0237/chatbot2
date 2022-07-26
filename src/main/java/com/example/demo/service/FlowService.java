@@ -13,6 +13,7 @@ import com.example.demo.repository.step.StepRepository;
 import com.example.demo.repository.step.WebSiteStepRepository;
 import com.example.demo.type.StepType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +31,8 @@ public class FlowService {
     private final MessageStepRepository messageStepRepository;
     private final WebSiteStepRepository webSiteStepRepository;
 
-    public FlowDto getFlow(long flowId){
-        Flow flow = flowRepository.findById(flowId).orElseThrow(EntityNotFoundException::new);
+    public FlowDto getFlow(long flowId) {
+        Flow flow = flowRepository.findByWithStep(flowId).orElseThrow(EntityNotFoundException::new);
         return FlowDto.toDto(flow);
     }
 
@@ -62,7 +63,6 @@ public class FlowService {
 
         if(stepDto.getStepType() == StepType.MESSAGE){
             MessageStep messageStep = MessageStep.builder()
-                    .flow(flow)
                     .name(stepDto.getStepName())
                     .text((stepDto.getText()))
                     .build();
@@ -72,10 +72,10 @@ public class FlowService {
 
         }else if(stepDto.getStepType()== StepType.WEBSITE){
             WebSiteStep webSiteStep = WebSiteStep.builder()
-                    .flow(flow)
                     .name(stepDto.getStepName())
                     .url(stepDto.getUrl())
                     .build();
+
             webSiteStep.setFlow(flow);
             webSiteStepRepository.save(webSiteStep);
         }
