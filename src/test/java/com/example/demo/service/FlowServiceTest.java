@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.FlowDto;
 import com.example.demo.dto.StepDto;
 import com.example.demo.dto.request.FlowCreateDto;
+import com.example.demo.dto.request.FlowRequestDto;
 import com.example.demo.entity.Flow;
 import com.example.demo.entity.step.MessageStep;
 import com.example.demo.entity.step.WebSiteStep;
@@ -163,6 +164,51 @@ class FlowServiceTest {
         assertEquals(websiteStepDto.getStepType(), webSiteStep.getStepType());
 
 
+
+    }
+
+    @Test
+    @DisplayName("플로우 정보 가져오기 ")
+    void update_flow_test(){
+
+        StepDto messageStepDto = StepDto.builder()
+                .stepId(1L)
+                .stepName("update message step")
+                .stepType(StepType.MESSAGE)
+                .text("update text")
+                .build();
+
+        StepDto websiteStepDto = StepDto.builder()
+                .stepId(2L)
+                .stepName("update website step")
+                .stepType(StepType.WEBSITE)
+                .url("www.heelo.com")
+                .build();
+
+        List<StepDto> steps = List.of(messageStepDto, websiteStepDto);
+
+        FlowRequestDto requestDto = FlowRequestDto.builder()
+                .name("update flow")
+                .steps(steps)
+                .build();
+
+
+        when(flowRepository.findById(flowId)).thenReturn(Optional.ofNullable(flow));
+        when(messageStepRepository.findById(1L)).thenReturn(Optional.ofNullable(messageStep));
+        when(webSiteStepRepository.findById(2L)).thenReturn(Optional.ofNullable(webSiteStep));
+
+
+        //when
+        FlowDto result = flowService.update(flowId, requestDto);
+
+        //then
+        assertEquals(requestDto.getName(), result.getFlowName());
+
+        assertEquals(messageStep.getName(), messageStepDto.getStepName());
+        assertEquals(messageStep.getText(), messageStepDto.getText());
+
+        assertEquals(webSiteStep.getName(), websiteStepDto.getStepName());
+        assertEquals(webSiteStep.getUrl(), websiteStepDto.getUrl());
 
     }
 

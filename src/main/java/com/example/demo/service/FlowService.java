@@ -84,7 +84,7 @@ public class FlowService {
     }
 
     //플로우 수정
-    public Flow update(long flowId, FlowRequestDto flowRequestDto){
+    public FlowDto update(long flowId, FlowRequestDto flowRequestDto){
         Flow flow = flowRepository.findById(flowId).orElseThrow(EntityNotFoundException::new);
 
         FlowDto flowDto = FlowRequestDto.toFlowDto(flowRequestDto);
@@ -94,7 +94,7 @@ public class FlowService {
         updateSteps(flow, flowDto);
 
 
-        return flow;
+        return FlowDto.toDto(flow);
     }
 
     //스텝 수정

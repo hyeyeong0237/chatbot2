@@ -36,7 +36,7 @@ class MessageStepRepositoryTest {
         flowRepository.save(flow);
 
         MessageStep messageStep = new MessageStep(flow, "messageStep", "hello");
-        messageStep.setText("hello");
+//        messageStep.setText("hello");
 
         messageStepRepository.save(messageStep);
 
