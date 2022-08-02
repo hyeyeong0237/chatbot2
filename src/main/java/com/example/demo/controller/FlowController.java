@@ -3,6 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.FlowDto;
 import com.example.demo.dto.request.FlowCreateDto;
+import com.example.demo.dto.request.FlowRequestDto;
 import com.example.demo.entity.Flow;
 import com.example.demo.service.FlowService;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +28,27 @@ public class FlowController {
     }
 
     @PostMapping
-    public ResponseEntity<Flow> create(@RequestBody @Valid FlowCreateDto flowCreateDto){
+    public ResponseEntity<Flow> createFlow(@RequestBody @Valid FlowCreateDto flowCreateDto){
 
         Flow flow = flowService.createFlow(flowCreateDto);
 
         return ResponseEntity.ok(flow);
+    }
+
+    @PostMapping(value = "/{flowId}")
+    public ResponseEntity<FlowDto> updateFlow(@PathVariable Long flowId, @RequestBody @Valid FlowRequestDto flowRequestDto){
+
+        FlowDto flow = flowService.updateFlow(flowId, flowRequestDto);
+
+        return ResponseEntity.ok(flow);
+    }
+
+    @DeleteMapping(value = "{flowId}")
+    public ResponseEntity<FlowDto> deleteFlow(@PathVariable Long flowId){
+
+       flowService.deleteFlow(flowId);
+
+        return ResponseEntity.ok().build();
     }
 
 

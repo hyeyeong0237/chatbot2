@@ -7,6 +7,7 @@ import com.example.demo.dto.request.FlowCreateDto;
 import com.example.demo.dto.request.FlowRequestDto;
 import com.example.demo.entity.Flow;
 import com.example.demo.entity.step.MessageStep;
+import com.example.demo.entity.step.Step;
 import com.example.demo.entity.step.WebSiteStep;
 import com.example.demo.repository.FlowRepository;
 import com.example.demo.repository.step.MessageStepRepository;
@@ -121,6 +122,21 @@ public class FlowService {
             WebSiteStep webSiteStep = webSiteStepRepository.findById(stepDto.getStepId()).orElseThrow(EntityNotFoundException::new);
             webSiteStep.update(stepDto.getStepName(), stepDto.getUrl());
         }
+    }
+
+    public void deleteFlow(Long flowId){
+
+        Flow flow = flowRepository.findById(flowId).orElseThrow(EntityNotFoundException::new);
+
+        for(Step step : flow.getSteps()){
+            if(step instanceof MessageStep messageStep){
+                messageStepRepository.delete(messageStep);
+            }else if(step instanceof WebSiteStep webSiteStep){
+                webSiteStepRepository.delete(webSiteStep);
+            }
+        }
+
+        flowRepository.delete(flow);
     }
 
 
