@@ -31,6 +31,10 @@ public class Flow extends BaseEntity{
 
     }
 
+    public void update(String name){
+        this.name = name;
+    }
+
 
 
 

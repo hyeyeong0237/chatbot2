@@ -4,6 +4,7 @@ package com.example.demo.service;
 import com.example.demo.dto.FlowDto;
 import com.example.demo.dto.StepDto;
 import com.example.demo.dto.request.FlowCreateDto;
+import com.example.demo.dto.request.FlowRequestDto;
 import com.example.demo.entity.Flow;
 import com.example.demo.entity.step.MessageStep;
 import com.example.demo.entity.step.WebSiteStep;
@@ -31,13 +32,14 @@ public class FlowService {
     private final MessageStepRepository messageStepRepository;
     private final WebSiteStepRepository webSiteStepRepository;
 
+    //플로우 정보 가져오기
     public FlowDto getFlow(long flowId) {
         Flow flow = flowRepository.findByWithStep(flowId).orElseThrow(EntityNotFoundException::new);
         return FlowDto.toDto(flow);
     }
 
 
-    //플로우 생
+    //플로우 생성
     @javax.transaction.Transactional
     public Flow create(FlowCreateDto flowCreateDto) {
 
@@ -50,15 +52,13 @@ public class FlowService {
             if(isNull(stepDto.getStepId())){
                 createStep(flow, stepDto);
             }
-//            else{
-//                updateStep(flow, stepDto);
-//            }
         }
 
 
         return flow;
     }
 
+    //스텝 생성
     private void createStep(Flow flow, StepDto stepDto) {
 
         if(stepDto.getStepType() == StepType.MESSAGE){
@@ -83,5 +83,44 @@ public class FlowService {
 
     }
 
+    //플로우 수정
+    public Flow update(long flowId, FlowRequestDto flowRequestDto){
+        Flow flow = flowRepository.findById(flowId).orElseThrow(EntityNotFoundException::new);
+
+        FlowDto flowDto = FlowRequestDto.toFlowDto(flowRequestDto);
+
+        flow.update(flowDto.getFlowName());
+
+        updateSteps(flow, flowDto);
+
+
+        return flow;
+    }
+
+    //스텝 수정
+    private void updateSteps(Flow flow, FlowDto flowDto){
+
+        for(StepDto stepDto : flowDto.getSteps()){
+            if(isNull(stepDto.getStepId())){
+                createStep(flow, stepDto);
+            }
+            else{
+                updateStep(stepDto);
+            }
+        }
+    }
+
+    //스텝 수정
+    private void updateStep(StepDto stepDto) {
+        StepType stepType = stepDto.getStepType();
+
+        if(stepType == StepType.MESSAGE){
+            MessageStep messageStep = messageStepRepository.findById(stepDto.getStepId()).orElseThrow(EntityNotFoundException::new);
+            messageStep.update(stepDto.getStepName(), stepDto.getText());
+        }else if(stepType == StepType.WEBSITE){
+            WebSiteStep webSiteStep = webSiteStepRepository.findById(stepDto.getStepId()).orElseThrow(EntityNotFoundException::new);
+            webSiteStep.update(stepDto.getStepName(), stepDto.getUrl());
+        }
+    }
 
 }

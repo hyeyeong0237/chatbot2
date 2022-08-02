@@ -20,13 +20,16 @@ public class WebSiteStep extends Step{
         this.url = url;
     }
 
+    public void update(String stepName, String url) {
+        super.update(stepName);
+        this.url = url;
+    }
+
     @Override
     public void setFlow(Flow flow){
         super.setFlow(flow);
     }
 
-    public void setUrl(String url){
-        this.url = url;
-    }
+
 
 }

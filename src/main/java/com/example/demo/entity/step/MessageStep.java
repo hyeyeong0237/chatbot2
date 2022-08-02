@@ -27,9 +27,9 @@ public class MessageStep extends Step{
         super.setFlow(flow);
     }
 
-    public void setText(String text){
+
+    public void update(String stepName, String text) {
+        super.update(stepName);
         this.text = text;
     }
-
-
 }

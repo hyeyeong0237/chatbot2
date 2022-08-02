@@ -41,4 +41,8 @@ public class Step extends BaseEntity {
         flow.getSteps().add(this);
     }
 
+    public void update(String name){
+        this.name = name;
+    }
+
 }
