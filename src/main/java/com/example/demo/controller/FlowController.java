@@ -29,7 +29,7 @@ public class FlowController {
     @PostMapping
     public ResponseEntity<Flow> create(@RequestBody @Valid FlowCreateDto flowCreateDto){
 
-        Flow flow = flowService.create(flowCreateDto);
+        Flow flow = flowService.createFlow(flowCreateDto);
 
         return ResponseEntity.ok(flow);
     }

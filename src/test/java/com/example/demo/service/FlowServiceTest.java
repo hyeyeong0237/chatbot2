@@ -103,7 +103,7 @@ class FlowServiceTest {
                 .build();
 
         //when
-        Flow flowResult = flowService.create(flowCreateDto);
+        Flow flowResult = flowService.createFlow(flowCreateDto);
         MessageStep messageStep = (MessageStep) flowResult.getSteps().get(0);
         WebSiteStep webSiteStep = (WebSiteStep) flowResult.getSteps().get(1);
 
@@ -168,7 +168,7 @@ class FlowServiceTest {
     }
 
     @Test
-    @DisplayName("플로우 정보 가져오기 ")
+    @DisplayName("플로우 정보 수정하기 ")
     void update_flow_test(){
 
         StepDto messageStepDto = StepDto.builder()
@@ -199,7 +199,7 @@ class FlowServiceTest {
 
 
         //when
-        FlowDto result = flowService.update(flowId, requestDto);
+        FlowDto result = flowService.updateFlow(flowId, requestDto);
 
         //then
         assertEquals(requestDto.getName(), result.getFlowName());
