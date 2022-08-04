@@ -32,4 +32,9 @@ public class MessageStep extends Step{
         super.update(stepName);
         this.text = text;
     }
+
+    @Override
+    public void delete(){
+        super.delete();
+    }
 }

@@ -212,5 +212,20 @@ class FlowServiceTest {
 
     }
 
+    @Test
+    @DisplayName("플로우 삭제하기")
+    void delete_flow_test(){
+
+
+        when(flowRepository.findByWithStep(flowId)).thenReturn(Optional.ofNullable(flow));
+
+        Flow flowResult = flowService.deleteFlow(flowId);
+
+
+        assertTrue(flowResult.isDeleted());
+
+
+    }
+
 
 }

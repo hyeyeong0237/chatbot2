@@ -45,4 +45,9 @@ public class Step extends BaseEntity {
         this.name = name;
     }
 
+    @Override
+    public void delete(){
+        super.delete();
+    }
+
 }

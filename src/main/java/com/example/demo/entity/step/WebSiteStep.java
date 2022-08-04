@@ -30,6 +30,11 @@ public class WebSiteStep extends Step{
         super.setFlow(flow);
     }
 
+    @Override
+    public void delete(){
+        super.delete();
+    }
+
 
 
 }

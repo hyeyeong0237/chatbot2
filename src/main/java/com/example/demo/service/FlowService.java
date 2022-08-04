@@ -124,19 +124,13 @@ public class FlowService {
         }
     }
 
-    public void deleteFlow(Long flowId){
+    public Flow deleteFlow(Long flowId){
 
-        Flow flow = flowRepository.findById(flowId).orElseThrow(EntityNotFoundException::new);
+        Flow flow = flowRepository.findByWithStep(flowId).orElseThrow(EntityNotFoundException::new);
 
-        for(Step step : flow.getSteps()){
-            if(step instanceof MessageStep messageStep){
-                messageStepRepository.delete(messageStep);
-            }else if(step instanceof WebSiteStep webSiteStep){
-                webSiteStepRepository.delete(webSiteStep);
-            }
-        }
+        flow.delete();
 
-        flowRepository.delete(flow);
+        return flow;
     }
 
 
