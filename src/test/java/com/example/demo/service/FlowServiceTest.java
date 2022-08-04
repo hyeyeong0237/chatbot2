@@ -185,6 +185,7 @@ class FlowServiceTest {
                 .url("www.heelo.com")
                 .build();
 
+
         List<StepDto> steps = List.of(messageStepDto, websiteStepDto);
 
         FlowRequestDto requestDto = FlowRequestDto.builder()
@@ -201,6 +202,7 @@ class FlowServiceTest {
         //when
         FlowDto result = flowService.updateFlow(flowId, requestDto);
 
+
         //then
         assertEquals(requestDto.getName(), result.getFlowName());
 
@@ -213,6 +215,67 @@ class FlowServiceTest {
     }
 
     @Test
+    @DisplayName("플로우 정보를 수정하고 새로운 스텝이 생성되어야 한다 ")
+    void update_create_flow_test(){
+
+        //then
+        StepDto messageStepDto = StepDto.builder()
+                .stepId(1L)
+                .stepName("update message step")
+                .stepType(StepType.MESSAGE)
+                .text("update text")
+                .build();
+
+        StepDto websiteStepDto = StepDto.builder()
+                .stepId(2L)
+                .stepName("update website step")
+                .stepType(StepType.WEBSITE)
+                .url("www.heelo.com")
+                .build();
+
+        StepDto messageStepNewDto = StepDto.builder()
+                .stepName("new step")
+                .stepType(StepType.MESSAGE)
+                .text("new text")
+                .build();
+
+        List<StepDto> steps = List.of(messageStepDto, websiteStepDto, messageStepNewDto);
+
+        FlowRequestDto requestDto = FlowRequestDto.builder()
+                .name("update flow")
+                .steps(steps)
+                .build();
+
+
+        //when
+        when(flowRepository.findById(flowId)).thenReturn(Optional.ofNullable(flow));
+        when(messageStepRepository.findById(1L)).thenReturn(Optional.ofNullable(messageStep));
+        when(webSiteStepRepository.findById(2L)).thenReturn(Optional.ofNullable(webSiteStep));
+
+        FlowDto flowResult = flowService.updateFlow(flowId, requestDto);
+
+        StepDto messageStepNew = flowResult.getSteps().get(2);
+
+        //then
+        assertEquals(requestDto.getName(), flowResult.getFlowName());
+
+        assertEquals(messageStep.getName(), messageStepDto.getStepName());
+        assertEquals(messageStep.getText(), messageStepDto.getText());
+
+        assertEquals(webSiteStep.getName(), websiteStepDto.getStepName());
+        assertEquals(webSiteStep.getUrl(), websiteStepDto.getUrl());
+
+        assertEquals(messageStepNewDto.getStepName(), messageStepNew.getStepName());
+        assertEquals(messageStepNewDto.getText(), messageStepNew.getText());
+
+
+
+
+
+
+    }
+
+    @Test
     @DisplayName("플로우 삭제하기")
     void delete_flow_test(){
 
@@ -220,7 +283,6 @@ class FlowServiceTest {
         when(flowRepository.findByWithStep(flowId)).thenReturn(Optional.ofNullable(flow));
 
         Flow flowResult = flowService.deleteFlow(flowId);
-
 
         assertTrue(flowResult.isDeleted());
 
