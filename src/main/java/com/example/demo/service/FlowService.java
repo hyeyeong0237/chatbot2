@@ -41,7 +41,7 @@ public class FlowService {
 
 
     //플로우 생성
-    @javax.transaction.Transactional
+    @Transactional
     public Flow createFlow(FlowCreateDto flowCreateDto) {
 
         Flow flow = Flow.builder()
@@ -85,6 +85,7 @@ public class FlowService {
     }
 
     //플로우 수정
+    @Transactional
     public FlowDto updateFlow(long flowId, FlowRequestDto flowRequestDto){
         Flow flow = flowRepository.findById(flowId).orElseThrow(EntityNotFoundException::new);
 
@@ -124,6 +125,7 @@ public class FlowService {
         }
     }
 
+    @Transactional
     public Flow deleteFlow(Long flowId){
 
         Flow flow = flowRepository.findByWithStep(flowId).orElseThrow(EntityNotFoundException::new);
