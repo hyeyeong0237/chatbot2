@@ -20,11 +20,6 @@ public class FlowDto {
 
     private List<StepDto> steps;
 
-//    public Flow toFlow() {
-//        return Flow.builder()
-//                .name(flowName)
-//                .build();
-//    }
 
     public static FlowDto toDto(Flow flow){
         return FlowDto.builder()

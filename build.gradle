@@ -27,8 +27,38 @@ dependencies {
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	//통합테스트
+	testImplementation "org.testcontainers:testcontainers:1.16.2"
+	testImplementation "org.testcontainers:junit-jupiter:1.16.2"
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
+//통합테스트
+sourceSets {
+	integrationTest {
+		java.srcDir "$projectDir/src/integrationTest/java"
+		resources.srcDir "$projectDir/src/integrationTest/resources"
+		compileClasspath += main.output + test.output
+		runtimeClasspath += main.output + test.output
+	}
+}
+
+configurations {
+	integrationTestImplementation.extendsFrom implementation
+	integrationTestImplementation.extendsFrom testImplementation
+	integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+task integrationTest(type: Test) {
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
+	classpath = sourceSets.integrationTest.runtimeClasspath
+	useJUnitPlatform()
+}
+
+check.dependsOn integrationTest

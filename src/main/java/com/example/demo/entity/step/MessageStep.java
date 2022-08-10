@@ -3,12 +3,14 @@ package com.example.demo.entity.step;
 
 import com.example.demo.entity.Flow;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("MESSAGE_STEP")
+@Where(clause = "deleted=false")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MessageStep extends Step{

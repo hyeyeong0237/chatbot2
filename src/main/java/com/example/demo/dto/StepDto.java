@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 
 
-import com.example.demo.entity.Flow;
 import com.example.demo.entity.step.MessageStep;
 import com.example.demo.entity.step.Step;
 import com.example.demo.entity.step.WebSiteStep;
@@ -17,7 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StepDto {
 
-    private Flow flow;
     private Long stepId;
     private String stepName;
     private StepType stepType;

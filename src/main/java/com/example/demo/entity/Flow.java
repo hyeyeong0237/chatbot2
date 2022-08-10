@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import com.example.demo.entity.step.Step;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,8 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "flow")
+@Where(clause = "deleted=false")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Flow extends BaseEntity{
 

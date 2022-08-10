@@ -6,6 +6,7 @@ import com.example.demo.dto.request.FlowCreateDto;
 import com.example.demo.dto.request.FlowRequestDto;
 import com.example.demo.entity.Flow;
 import com.example.demo.entity.step.MessageStep;
+import com.example.demo.entity.step.Step;
 import com.example.demo.entity.step.WebSiteStep;
 import com.example.demo.repository.FlowRepository;
 import com.example.demo.repository.step.MessageStepRepository;
@@ -19,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,37 +44,48 @@ class FlowServiceTest {
     private FlowService flowService;
 
     private Long flowId = 1L;
+    private Long messageStepId = 1L;
+    private Long websiteStepId = 2L;
+
     private Flow flow;
     private MessageStep messageStep;
     private WebSiteStep webSiteStep;
 
 
+
     private
     @BeforeEach
-    void init(){
+    void init() throws NoSuchFieldException, IllegalAccessException {
 
 
         flow = Flow.builder()
                 .name("test flow")
                 .build();
 
-        flow.setId(flowId);
+        Field flowField = Flow.class.getDeclaredField("id");
+        flowField.setAccessible(true);
+        flowField.set(flow, 1L);
 
        messageStep = MessageStep.builder()
                 .name("message step")
                 .text("hello")
                 .build();
-
-       messageStep.setId(1L);
        messageStep.setFlow(flow);
+
+       Field messageStepField = Step.class.getDeclaredField("id");
+       messageStepField.setAccessible(true);
+       messageStepField.set(messageStep, 1L);
+
 
        webSiteStep = WebSiteStep.builder()
                 .name("website step")
                 .url("www.hello.com")
                 .build();
-
-       webSiteStep.setId(2L);
        webSiteStep.setFlow(flow);
+
+        Field websiteStepField = Step.class.getDeclaredField("id");
+        websiteStepField.setAccessible(true);
+        websiteStepField.set(webSiteStep, 2L);
 
     }
 
@@ -123,14 +136,14 @@ class FlowServiceTest {
     void get_flow_test() throws Exception {
 
         StepDto messageStepDto = StepDto.builder()
-                .stepId(1L)
+                .stepId(messageStepId)
                 .stepName("message step")
                 .stepType(StepType.MESSAGE)
                 .text("hello")
                 .build();
 
         StepDto websiteStepDto = StepDto.builder()
-                .stepId(2L)
+                .stepId(websiteStepId)
                 .stepName("website step")
                 .stepType(StepType.WEBSITE)
                 .url("www.hello.com")
@@ -195,8 +208,8 @@ class FlowServiceTest {
 
 
         when(flowRepository.findById(flowId)).thenReturn(Optional.ofNullable(flow));
-        when(messageStepRepository.findById(1L)).thenReturn(Optional.ofNullable(messageStep));
-        when(webSiteStepRepository.findById(2L)).thenReturn(Optional.ofNullable(webSiteStep));
+        when(messageStepRepository.findById(messageStepId)).thenReturn(Optional.ofNullable(messageStep));
+        when(webSiteStepRepository.findById(websiteStepId)).thenReturn(Optional.ofNullable(webSiteStep));
 
 
         //when
@@ -249,8 +262,8 @@ class FlowServiceTest {
 
         //when
         when(flowRepository.findById(flowId)).thenReturn(Optional.ofNullable(flow));
-        when(messageStepRepository.findById(1L)).thenReturn(Optional.ofNullable(messageStep));
-        when(webSiteStepRepository.findById(2L)).thenReturn(Optional.ofNullable(webSiteStep));
+        when(messageStepRepository.findById(messageStepId)).thenReturn(Optional.ofNullable(messageStep));
+        when(webSiteStepRepository.findById(websiteStepId)).thenReturn(Optional.ofNullable(webSiteStep));
 
         FlowDto flowResult = flowService.updateFlow(flowId, requestDto);
 

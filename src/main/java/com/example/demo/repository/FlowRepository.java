@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface FlowRepository extends JpaRepository<Flow, Long> {
 
-    @Query("select  f from Flow f join fetch f.steps where f.id = : id")
+    @Query("select  f from Flow f join fetch f.steps where f.id = :id")
     Optional<Flow> findByWithStep(@Param(value = "id") Long id);
 
 }
